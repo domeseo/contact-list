@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 
 // Separamos la función de la API del componente
 async function createContactAPI(user, contact) {
+
     try {
         const response = await fetch('https://playground.4geeks.com/contact/agendas/' + user + '/contacts', {
             method: 'POST',
@@ -28,13 +29,14 @@ async function createContactAPI(user, contact) {
 }
 
 // Creamos el componente
-function CreateNewContact({ user }) {
+function CreateNewContact({ user, pVisible }) {
     const [contact, setContact] = useState({
         name: '',
         phone: '',
         email: '',
         address: ''
     });
+    const [visible, setVisible] = useState(pVisible);
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
@@ -62,48 +64,71 @@ function CreateNewContact({ user }) {
 
     return (
         <>
-            <form onSubmit={handleSubmit}>
-                <div>
-                    <label htmlFor="name">Nombre Contacto:</label>
-                    <input
-                        type="text"
-                        id="name"
-                        name="name"
-                        value={contact.name}
-                        onChange={handleInputChange}
-                    />
+            <form onSubmit={handleSubmit} style={{ display: "none" }}>
+                <div className="card border-primary rounded-0">
+                    <div className="card-header p-0">
+                        <div className="bg-info text-white text-center py-2">
+                            <h3><i className="fa fa-envelope"></i> Create new contact</h3>
+                            <p className="m-0">Insert Contact Data</p>
+                        </div>
+                    </div>
+                    <div className="card-body p-3">
+                        <div className="form-group">
+                            <div className="input-group mb-2">
+                                <div className="input-group-prepend">
+                                    <div className="input-group-text"><i className="fa fa-user text-info"></i></div>
+                                </div>
+                                <input placeholder="Contact Name" type="text"
+                                    id="name"
+                                    name="name"
+                                    value={contact.name}
+                                    onChange={handleInputChange} />
+                            </div>
+                        </div>
+                        <div className="form-group">
+                            <div className="input-group mb-2">
+                                <div className="input-group-prepend">
+                                    <div className="input-group-text"><i className="fa fa-envelope text-info"></i></div>
+                                </div>
+                                <input placeholder="Insert Email Address" type="text"
+                                    id="email"
+                                    name="email"
+                                    value={contact.email}
+                                    onChange={handleInputChange}
+                                />
+                            </div>
+                            <div className="form-group">
+                                <div className="input-group mb-2">
+                                    <div className="input-group-prepend">
+                                        <div className="input-group-text"><i className="fa fa-envelope text-info"></i></div>
+                                    </div>
+                                    <input placeholder="Insert Phone Number" type="text"
+                                        id="phone"
+                                        name="phone"
+                                        value={contact.phone}
+                                        onChange={handleInputChange}
+                                    />
+                                </div>
+                                <div className="form-group">
+                                    <div className="input-group mb-2">
+                                        <div className="input-group-prepend">
+                                            <div className="input-group-text"><i className="fa fa-envelope text-info"></i></div>
+                                        </div>
+                                        <input placeholder=" Insert address " type="text"
+                                            id="address"
+                                            name="address"
+                                            value={contact.address}
+                                            onChange={handleInputChange}
+                                        />
+                                    </div>
+                                </div>
+                                <div className="text-center">
+                                    <input onClick={CreateNewContact} type="submit" value="Enviar" className="btn btn-info btn-block rounded-0 py-2" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div>
-                    <label htmlFor="phone">Teléfono:</label>
-                    <input
-                        type="tel"
-                        id="phone"
-                        name="phone"
-                        value={contact.phone}
-                        onChange={handleInputChange}
-                    />
-                </div>
-                <div>
-                    <label htmlFor="email">Email:</label>
-                    <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        value={contact.email}
-                        onChange={handleInputChange}
-                    />
-                </div>
-                <div>
-                    <label htmlFor="address">Dirección:</label>
-                    <input
-                        type="text"
-                        id="address"
-                        name="address"
-                        value={contact.address}
-                        onChange={handleInputChange}
-                    />
-                </div>
-                <button type="submit">Crear Contacto</button>
             </form>
         </>
     );

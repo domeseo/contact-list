@@ -1,16 +1,16 @@
 import React, { useState } from "react";
+import DeleteContact from "./DeleteUser";
 
 export function CreateUser() {
     const [user, setUser] = useState('dome');
-    const [userContacts, setUserContacts] = useState({ contacts: [] });
-    const [contact, setContact] = useState(null);
+    const [contacts, setContacts] = useState([]);
     const url = 'https://playground.4geeks.com/contact/agendas/' + user;
 
     async function fetchUserContacts() {
         try {
             const response = await fetch(url);
             const data = await response.json();
-            setUserContacts(data);
+            setContacts(data.contacts);
             console.log(data);
         } catch (error) {
             console.error("Error al obtener contactos:", error);
@@ -19,21 +19,51 @@ export function CreateUser() {
 
     return (
         <>
-            <h1>Contactos de {user}</h1>
-            <button onClick={fetchUserContacts}>Descargar Contactos</button>
-            <div className="contacts-list">
-                {userContacts.contacts.length === 0 ? (
-                    <p>No hay contactos disponibles</p>
-                ) : (
-                    userContacts.contacts.map((contact, index) => (
-                        <div key={index} className="contact-card">
-                            <h3>{contact.full_name}</h3>
-                            <p><strong>Email:</strong> {contact.email}</p>
-                            <p><strong>Teléfono:</strong> {contact.phone}</p>
-                            <p><strong>Dirección:</strong> {contact.address}</p>
-                        </div>
-                    ))
-                )}
+            <div className="panel">
+                <div className="panel-heading">
+                    <span className="title">Contactos de <strong>{user.toUpperCase()}</strong>  </span>
+                    <button onClick={fetchUserContacts} className="btn btn-primary">
+                        <i className="fas fa-sync-alt"></i> Actualizar
+                    </button>
+                    <button onClick={fetchUserContacts} className="btn btn-primary">
+                        <i className="fas fa-sync-alt"></i> New Contact
+                    </button>
+                </div>
+
+                <div className="contacts-list">
+                    {contacts.length === 0 ? (
+                        <p className="text-center p-3">No hay contactos disponibles</p>
+                    ) : (
+                        <ul className="list-group">
+                            {contacts.map((contact, index) => (
+                                <li key={index} className="list-group-item">
+                                    <img
+                                        src={`https://i.pravatar.cc/150?img=${index}`}
+                                        alt={contact.full_name}
+                                        className="img-circle"
+                                    />
+                                    <div className="contact-info">
+                                        <h3 className="name">{contact.full_name}</h3>
+                                        <div className="contact-details">
+                                            <p className="text-muted">
+                                                <i className="fas fa-map-marker-alt"></i> {contact.address}
+                                            </p>
+                                            <p className="text-muted">
+                                                <i className="fas fa-phone"></i> {contact.phone}
+                                            </p>
+                                            <p className="text-muted">
+                                                <i className="fas fa-envelope"></i> {contact.email}
+                                            </p>
+                                        </div>
+                                    </div>
+                                    <div className="contact-actions">
+                                        <DeleteContact contact={contact} user={user} setContacts={setContacts} />
+                                    </div>
+                                </li>
+                            ))}
+                        </ul>
+                    )}
+                </div>
             </div>
         </>
     );
