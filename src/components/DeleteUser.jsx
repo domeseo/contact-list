@@ -20,7 +20,7 @@ const DeleteContact = ({ contact, user, setContacts }) => {
 
     return (
         <>
-            <button onClick={() => handleDelete(contact.id)}> Delete Contact </button>
+            <button className="btn btn-danger" onClick={() => handleDelete(contact.id)}> Delete Contact </button>
         </>
     );
 };

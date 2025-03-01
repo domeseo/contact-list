@@ -29,14 +29,13 @@ async function createContactAPI(user, contact) {
 }
 
 // Creamos el componente
-function CreateNewContact({ user, pVisible }) {
+function CreateNewContact({ user, setContacts, isVisible, setIsVisible }) {
     const [contact, setContact] = useState({
         name: '',
         phone: '',
         email: '',
         address: ''
     });
-    const [visible, setVisible] = useState(pVisible);
 
     const handleInputChange = (event) => {
         const { name, value } = event.target;
@@ -49,22 +48,23 @@ function CreateNewContact({ user, pVisible }) {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await createContactAPI(user, contact);
-            // Limpiar el formulario después de crear el contacto
+            const newContact = await createContactAPI(user, contact);
+            setContacts(prevContacts => [...prevContacts, newContact]);
             setContact({
                 name: '',
                 phone: '',
                 email: '',
                 address: ''
             });
+            setIsVisible(false);
         } catch (error) {
             console.error("Error:", error);
         }
     };
 
     return (
-        <>
-            <form onSubmit={handleSubmit} style={{ display: "none" }}>
+        <div style={{ display: isVisible ? 'block' : 'none' }}>
+            <form onSubmit={handleSubmit}>
                 <div className="card border-primary rounded-0">
                     <div className="card-header p-0">
                         <div className="bg-info text-white text-center py-2">
@@ -73,16 +73,27 @@ function CreateNewContact({ user, pVisible }) {
                         </div>
                     </div>
                     <div className="card-body p-3">
+                        <button
+                            type="button"
+                            className="btn btn-sm btn-danger float-right mb-1"
+                            onClick={() => setIsVisible(false)}
+                        >
+                            Close This
+                        </button>
                         <div className="form-group">
                             <div className="input-group mb-2">
                                 <div className="input-group-prepend">
                                     <div className="input-group-text"><i className="fa fa-user text-info"></i></div>
                                 </div>
-                                <input placeholder="Contact Name" type="text"
+                                <input
+                                    className="form-control"
+                                    placeholder="Contact Name"
+                                    type="text"
                                     id="name"
                                     name="name"
                                     value={contact.name}
-                                    onChange={handleInputChange} />
+                                    onChange={handleInputChange}
+                                />
                             </div>
                         </div>
                         <div className="form-group">
@@ -90,47 +101,56 @@ function CreateNewContact({ user, pVisible }) {
                                 <div className="input-group-prepend">
                                     <div className="input-group-text"><i className="fa fa-envelope text-info"></i></div>
                                 </div>
-                                <input placeholder="Insert Email Address" type="text"
+                                <input
+                                    className="form-control"
+                                    placeholder="Insert Email Address"
+                                    type="email"
                                     id="email"
                                     name="email"
                                     value={contact.email}
                                     onChange={handleInputChange}
                                 />
                             </div>
-                            <div className="form-group">
-                                <div className="input-group mb-2">
-                                    <div className="input-group-prepend">
-                                        <div className="input-group-text"><i className="fa fa-envelope text-info"></i></div>
-                                    </div>
-                                    <input placeholder="Insert Phone Number" type="text"
-                                        id="phone"
-                                        name="phone"
-                                        value={contact.phone}
-                                        onChange={handleInputChange}
-                                    />
+                        </div>
+                        <div className="form-group">
+                            <div className="input-group mb-2">
+                                <div className="input-group-prepend">
+                                    <div className="input-group-text"><i className="fa fa-phone text-info"></i></div>
                                 </div>
-                                <div className="form-group">
-                                    <div className="input-group mb-2">
-                                        <div className="input-group-prepend">
-                                            <div className="input-group-text"><i className="fa fa-envelope text-info"></i></div>
-                                        </div>
-                                        <input placeholder=" Insert address " type="text"
-                                            id="address"
-                                            name="address"
-                                            value={contact.address}
-                                            onChange={handleInputChange}
-                                        />
-                                    </div>
-                                </div>
-                                <div className="text-center">
-                                    <input onClick={CreateNewContact} type="submit" value="Enviar" className="btn btn-info btn-block rounded-0 py-2" />
-                                </div>
+                                <input
+                                    className="form-control"
+                                    placeholder="Insert Phone Number"
+                                    type="text"
+                                    id="phone"
+                                    name="phone"
+                                    value={contact.phone}
+                                    onChange={handleInputChange}
+                                />
                             </div>
+                        </div>
+                        <div className="form-group">
+                            <div className="input-group mb-2">
+                                <div className="input-group-prepend">
+                                    <div className="input-group-text"><i className="fa fa-home text-info"></i></div>
+                                </div>
+                                <input
+                                    className="form-control"
+                                    placeholder="Insert address"
+                                    type="text"
+                                    id="address"
+                                    name="address"
+                                    value={contact.address}
+                                    onChange={handleInputChange}
+                                />
+                            </div>
+                        </div>
+                        <div className="text-center">
+                            <input type="submit" value="Guardar" className="btn btn-info btn-block rounded-0 py-2" />
                         </div>
                     </div>
                 </div>
             </form>
-        </>
+        </div>
     );
 }
 

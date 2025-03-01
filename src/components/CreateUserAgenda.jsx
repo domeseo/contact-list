@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import DeleteContact from "./DeleteUser";
+import CreateNewContact from "./CreateNewContact";
+import GetContact from "./GetContact";
 
 export function CreateUser() {
     const [user, setUser] = useState('dome');
     const [contacts, setContacts] = useState([]);
+    const [createUserVisible, setCreateUserVisible] = useState(false);
     const url = 'https://playground.4geeks.com/contact/agendas/' + user;
 
     async function fetchUserContacts() {
@@ -17,22 +20,34 @@ export function CreateUser() {
         }
     }
 
+    function displayContactForm() {
+        setCreateUserVisible(true);
+    }
+
     return (
         <>
+            <GetContact />
             <div className="panel">
                 <div className="panel-heading">
-                    <span className="title">Contactos de <strong>{user.toUpperCase()}</strong>  </span>
-                    <button onClick={fetchUserContacts} className="btn btn-primary">
-                        <i className="fas fa-sync-alt"></i> Actualizar
+                    <span className="title">La agenda de <strong>{user.toUpperCase()}</strong></span>
+                    <button onClick={fetchUserContacts} className="btn btn-info m-2">
+                        <i className="fas fa-sync-alt"></i> Todos los Contactos
                     </button>
-                    <button onClick={fetchUserContacts} className="btn btn-primary">
-                        <i className="fas fa-sync-alt"></i> New Contact
+                    <button onClick={displayContactForm} className="btn btn-info">
+                        <i className="fas fa-plus"></i> New Contact
                     </button>
                 </div>
 
+                <CreateNewContact
+                    user={user}
+                    setContacts={setContacts}
+                    isVisible={createUserVisible}
+                    setIsVisible={setCreateUserVisible}
+                />
+
                 <div className="contacts-list">
                     {contacts.length === 0 ? (
-                        <p className="text-center p-3">No hay contactos disponibles</p>
+                        <p className="text-center p-3">Pulsa en "Actualizar" para obtener los contactos, puedes también crear uno</p>
                     ) : (
                         <ul className="list-group">
                             {contacts.map((contact, index) => (
